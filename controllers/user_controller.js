@@ -1,4 +1,11 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
+
+module.exports.profile = function(req, res){
+    return res.render('profile', {
+        title: 'Profile'
+    });
+}
 
 module.exports.create = async function(req, res){
     try {
@@ -11,7 +18,14 @@ module.exports.create = async function(req, res){
             console.log('User already exist, signIn instead');
             return res.status(401);
         } else {
-            user = await User.create(req.body);
+            // encrypt password using bcrypt
+            const salt = await bcrypt.genSalt(10);                      
+            const hash = await bcrypt.hash(req.body.password, salt)
+            user = await User.create({
+                name: req.body.name,
+                email: req.body.email,
+                password: hash
+            });
             console.log(user);
             return res.redirect('/user/sign-in');
         }
@@ -42,3 +56,4 @@ module.exports.destroySession = function(req, res){
     console.log('Logged Out successfully');
     return res.redirect('/');
 }
+

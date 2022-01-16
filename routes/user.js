@@ -19,4 +19,6 @@ router.get('/destroy-session', passport.checkAuthentication, userController.dest
 router.get('/sign-in', passport.checkUnAuthentication, userController.signIn);
 router.get('/sign-up', passport.checkUnAuthentication, userController.signUp);
 
+router.get('/profile', passport.checkAuthentication, userController.profile);
+
 module.exports = router;
